@@ -30,9 +30,25 @@ const userSchema = new Schema({
     },
     orders: [
         {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Order"
-        }
+            menu: { 
+                type: mongoose.Schema.Types.ObjectId, 
+                ref: "Menu" 
+            },
+            name: String,
+            price: Number,
+            quantity: { 
+                type: Number, 
+                default: 1 
+            },
+            image: { 
+                type: String, 
+                required: true 
+            }, 
+            date: { 
+                type: Date, 
+                default: Date.now 
+            },
+        },
     ],
     createdAt: {
         type: Date,

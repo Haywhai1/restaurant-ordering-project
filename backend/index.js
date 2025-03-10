@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRoute = require("./src/routes/user.route");
 const menuRoute = require("./src/routes/menu.route");
+const orderRoute = require("./src/routes/order.route")
 
 const cors = require("cors");
 
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/v1/users", userRoute);
 app.use("/api/v1/menu", menuRoute);
+app.use("/api/v1/orders", orderRoute); 
 
 
 app.get("/", (req, res) => {

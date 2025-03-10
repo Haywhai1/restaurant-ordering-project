@@ -135,7 +135,7 @@ const HomeLayout = () => {
         </button>
 
         {/* Main Content */}
-        <div className="bg-white shadow-lg border-2 border-t-0 min-h-screen">
+        <div className="bg-gray-100 shadow-lg border-2 border-t-0 min-h-screen content-center ">
           <Outlet />
         </div>
       </div>

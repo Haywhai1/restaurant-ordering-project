@@ -5,8 +5,6 @@ const Login = () => {
 
   const { formData, erorrMessage, handleChange, handleSubmit } = useLogin();
   const navigate = useNavigate(); 
-  
-// Navigate to the Register page ("/" route)
   const handleRegisterRedirect = () => {
     navigate("/"); 
   };

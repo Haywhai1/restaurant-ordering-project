@@ -48,7 +48,7 @@ const HomeLayout = () => {
         }`}
       >
         {/* Sidebar content */}
-        <h2 className="text-2xl font-bold mb-8 text-center text-blue-700">Dashboard</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center text-blue-700">RolaKitchen</h2>
 
         {/* Home Button with Icon */}
         <NavLink
@@ -66,7 +66,7 @@ const HomeLayout = () => {
 
         {/* Profile Button with Icon */}
         <NavLink
-          to="/home/dashboard"
+          to="/home/profile"
           className={({ isActive }) =>
             isActive
               ? "mb-4 flex items-center px-6 py-2 bg-gray-200 text-blue-400 rounded-lg transition duration-300"

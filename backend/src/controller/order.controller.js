@@ -68,10 +68,33 @@ const getUserOrder = async (req, res) => {
   }
 };
 
+const deleteOrder = async (req, res) => {
+  const { orderId } = req.params; 
+  try {
+    const user = await userModel.findById(req.user);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const orderIndex = user.orders.findIndex(order => order._id.toString() === orderId);
+    if (orderIndex === -1) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    user.orders.splice(orderIndex, 1);
+    await user.save();
+    res.status(200).json({ message: "Order deleted successfully" });
+    
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 const orderController = {
   addOrder,
-  getUserOrder
+  getUserOrder,
+  deleteOrder
 };
 
 module.exports = orderController;

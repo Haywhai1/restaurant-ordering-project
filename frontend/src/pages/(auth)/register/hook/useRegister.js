@@ -39,21 +39,18 @@ export const useRegister = () => {
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         alert("Registration successful!");
-        navigate("/dashboard");
+        navigate("/home");
       } else {
         alert("Registration successful, but no token returned.");
       }
     } catch (error) {
       console.error("Error:", error);
       
-      // Check if the error response has the specific message for the username already existing
       if (error.response && error.response.data) {
         setErrorMessage(error.response.data.error || "An error occurred.");
       } else {
         setErrorMessage("An error occurred.");
       }
-
-      // alert("An error occurred.");
     }
   };
 

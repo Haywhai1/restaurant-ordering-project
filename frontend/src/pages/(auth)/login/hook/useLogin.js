@@ -10,7 +10,6 @@ export const useLogin = () => {
     password: "",
   });
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -18,7 +17,6 @@ export const useLogin = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,7 +29,6 @@ export const useLogin = () => {
       localStorage.setItem("token", response.data.token);
 
       if (response.data) {
-        // alert("Login successful!");
         navigate("/home");
       }
     } catch (error) {

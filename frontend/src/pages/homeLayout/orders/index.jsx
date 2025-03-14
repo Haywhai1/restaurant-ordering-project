@@ -1,69 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import useOrder from './hook/useOrder';
 
 const Orders = () => {
-  const [orders, setOrders] = useState([]);
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    // Fetch the orders from the backend API
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/api/v1/users/currentUser', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}` // Assuming JWT token is stored in localStorage
-          }
-        });
-        const data = await response.json();
-        if (data.orders) {
-          console.log(data.orders, "order");
-
-          // Set orders and calculate total when orders are fetched
-          setOrders(data.orders);
-          calculateTotal(data.orders);
-        }
-      } catch (error) {
-        console.error('Error fetching orders:', error);
-      }
-    };
-
-    fetchOrders();
-  }, []);
-
-  const calculateTotal = (orders) => {
-    let subtotal = 0;
-    orders.forEach(order => {
-      subtotal += order.price * order.quantity;
-    });
-    setTotal(subtotal);
-  };
-
-  const handleIncreaseQuantity = (index) => {
-    const updatedOrders = [...orders];
-    const existingOrder = updatedOrders.find(order => order._id === updatedOrders[index]._id);
-    
-    if (existingOrder) {
-      existingOrder.quantity += 1;
-      setOrders(updatedOrders);
-      calculateTotal(updatedOrders);
-    }
-  };
-
-  const handleDecreaseQuantity = (index) => {
-    const updatedOrders = [...orders];
-    const existingOrder = updatedOrders.find(order => order._id === updatedOrders[index]._id);
-    
-    if (existingOrder && existingOrder.quantity > 1) {
-      existingOrder.quantity -= 1;
-      setOrders(updatedOrders);
-      calculateTotal(updatedOrders);
-    }
-  };
-
-  const handleCheckout = () => {
-    // Implement checkout logic, e.g., create an order summary or proceed to payment
-    alert('Proceeding to checkout!');
-  };
+  const {orders, total, handleIncreaseQuantity, handleDecreaseQuantity, handleDeleteOrder,handleCheckout} = useOrder();
+  
 
   return (
     <div className="max-w-4xl mx-auto mt-4 p-6 bg-white rounded-lg shadow-lg space-y-8">
@@ -104,6 +43,15 @@ const Orders = () => {
                   className="object-cover w-full h-32 rounded-lg" 
                 />
               </div>
+
+              {/* Delete Button */}
+              <button
+                onClick={() => handleDeleteOrder(order._id)}
+                className="text-red-500 ml-8 hover:text-red-600"
+                >
+                <i className="fas fa-trash-alt text-2xl"></i>
+              </button>
+
             </div>
           ))
         ) : (

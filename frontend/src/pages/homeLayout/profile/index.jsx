@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { useGetCurrentUser } from "../../shared/hooks/useGetCurrentUser";
+import { useGetCurrentUser } from "../../../shared/hooks/useGetCurrentUser";
 
-const Dashboard = () => {
+const Profile = () => {
   const { user, isLoading, logout } = useGetCurrentUser();
   const navigate = useNavigate();
 
@@ -12,8 +12,6 @@ const Dashboard = () => {
       </div>
     );
   }
-
-//   console.log(user, "iss");
 
   if (!user) {
     return navigate("/login");
@@ -111,4 +109,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Profile;

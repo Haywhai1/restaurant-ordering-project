@@ -1,39 +1,37 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "./client";
 
 export const useGetCurrentUser = () => {
-  const [user, setuser] = useState();
-  const [isLoading, setisLoading] = useState(null);
+  const [user, setUser] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  async function getCurrentUser() {
-    setisLoading(true);
-    
-    try {
-      const res = await axios.get(
-        "http://localhost:4000/api/v1/users/currentUser",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(res);
-      setuser(res.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setisLoading(false);
-    }
-  }
 
-  function logout() {
+  const getCurrentUser = async () => {
+    setIsLoading(true);
+
+    try {
+      const res = await apiClient.get("/users/currentUser");
+      setUser(res.data);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = () => {
     localStorage.removeItem("token");
-    setuser(null);
+    apiClient.defaults.headers["Authorization"] = "";
+    setUser(null);
     navigate("/login");
-  }
+  };
+
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
+    }
     getCurrentUser();
   }, []);
 

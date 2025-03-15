@@ -1,17 +1,24 @@
 import useOrder from './hook/useOrder';
 
 const Orders = () => {
-  const {orders, total, handleIncreaseQuantity, handleDecreaseQuantity, handleDeleteOrder,handleCheckout} = useOrder();
-  
+  const {orders, total, isLoading, handleIncreaseQuantity, handleDecreaseQuantity, handleDeleteOrder,handleCheckout} = useOrder();
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center text-black justify-center min-h-screen font-bold text-xl">
+        Loading...
+      </div>
+    );
+  }
+  
   return (
     <div className="max-w-4xl mx-auto mt-4 p-6 bg-white rounded-lg shadow-lg space-y-8">
-      <h1 className="text-3xl font-semibold text-center text-gray-800">Your Orders</h1>
+      <h1 className="text-3xl font-semibold text-center text-blue-800">Your Orders</h1>
 
       <div className="space-y-4">
         {orders.length > 0 ? (
           orders.map((order, index) => (
-            <div className="flex justify-between items-center p-4 border-b border-gray-200 rounded-lg hover:bg-gray-50 transition-colors" key={order._id}>
+            <div className="flex justify-between items-center p-4 border-t border-gray-200 rounded-lg hover:bg-gray-50 transition-colors" key={order._id}>
               {/* Left Side: Order Details */}
               <div className="flex flex-col space-y-2 w-2/3">
                 <h3 className="text-xl font-medium text-gray-800">{order.name}</h3>

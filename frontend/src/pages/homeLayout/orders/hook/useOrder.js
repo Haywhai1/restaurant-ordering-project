@@ -1,25 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { apiClient } from '../../../../shared/hooks/client';
 const useOrder = () => {
-     const [orders, setOrders] = useState([]);
+      const [orders, setOrders] = useState([]);
       const [total, setTotal] = useState(0);
+      const [isLoading, setIsLoading] = useState();
+      
     
       useEffect(() => {
         const fetchOrders = async () => {
           try {
-            const response = await fetch('http://localhost:4000/api/v1/users/currentUser', {
-              method: 'GET',
-              headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}` 
-              }
-            });
-            const data = await response.json();
+            setIsLoading(true);
+            const response = await apiClient.get("/users/currentUser");
+            const data = response.data;
+
             if (data.orders) {
-              console.log(data.orders, "order");
               setOrders(data.orders);
               calculateTotal(data.orders);
             }
+
           } catch (error) {
             console.error('Error fetching orders:', error);
+          }finally{
+            setIsLoading(false);
           }
         };
     
@@ -58,18 +60,14 @@ const useOrder = () => {
     
       const handleDeleteOrder = async (orderId) => {
         try {
-          const response = await fetch(`http://localhost:4000/api/v1/orders/${orderId}`, {
-            method: 'DELETE',
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            },
-          });
-      
-          if (response.ok) {
-            setOrders(orders.filter(order => order._id !== orderId));
-            calculateTotal(orders.filter(order => order._id !== orderId));
+          const response = await apiClient.delete(`/orders/${orderId}`);
+         
+          if (response.status >= 200 && response.status < 300) {
+            const updatedOrders = orders.filter(order => order._id !== orderId);
+            setOrders(updatedOrders);
+            calculateTotal(updatedOrders);
           } else {
-            console.error('Failed to delete the order');
+            console.error('Failed to delete the order, response status:', response.status);
           }
         } catch (error) {
           console.error('Error deleting the order:', error);
@@ -80,7 +78,7 @@ const useOrder = () => {
       const handleCheckout = () => {
         alert('Proceeding to checkout!');
       };
-  return {orders, total, calculateTotal, handleIncreaseQuantity, handleDecreaseQuantity, handleDeleteOrder,handleCheckout}
+  return {orders, total, isLoading, calculateTotal, handleIncreaseQuantity, handleDecreaseQuantity, handleDeleteOrder,handleCheckout}
 }
 
 export default useOrder

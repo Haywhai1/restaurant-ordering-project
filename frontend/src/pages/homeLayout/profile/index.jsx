@@ -53,15 +53,6 @@ const Profile = () => {
         {user?.username?.charAt(0).toUpperCase()}
       </div>
 
-      {/* <p
-  className={`${
-    user?.role === "admin" ? "text-green-200" : "text-blue-500"
-  } mb-2`}
->
-  {user?.email}
-</p> */}
-
-
       {/* User Role */}
       <span
         className={`px-4 py-2 text-sm font-medium rounded-full mb-6 ${

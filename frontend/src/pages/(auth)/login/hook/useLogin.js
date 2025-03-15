@@ -1,10 +1,10 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../../../shared/hooks/client"; 
 
 export const useLogin = () => {
   const navigate = useNavigate();
-  const [erorrMessage, seterorrMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -20,26 +20,23 @@ export const useLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
-
     try {
-      const url = "http://localhost:4000/api/v1/users/login";
-      const response = await axios.post(url, formData);
+      const response = await apiClient.post("/users/login", formData); 
       console.log(response, "response");
-      localStorage.setItem("token", response.data.token);
-
-      if (response.data) {
-        navigate("/home");
-      }
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+      apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
+      navigate("/home");
     } catch (error) {
       console.error("Error:", error);
+
       if (error.response) {
-        seterorrMessage(error.response.data.error);
+        setErrorMessage(error.response.data.error);
       } else {
-        seterorrMessage("Network error, please try again later.");
+        setErrorMessage("Network error, please try again later.");
       }
     }
   };
 
-  return { formData, erorrMessage, handleChange, handleSubmit };
+  return { formData, errorMessage, handleChange, handleSubmit };
 };

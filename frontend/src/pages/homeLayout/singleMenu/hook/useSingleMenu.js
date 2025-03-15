@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useGetCurrentUser } from "../../../../shared/hooks/useGetCurrentUser";
+import { apiClient } from "../../../../shared/hooks/client";
 
 const useSingleMenu = () => {
      const { isLoading, user, logout } = useGetCurrentUser();
@@ -11,44 +12,36 @@ const useSingleMenu = () => {
     
       useEffect(() => {
         const fetchMenu = async () => {
+          setLoading(true); 
           try {
-            const response = await fetch(
-              `http://localhost:4000/api/v1/menu/${menuId}`
-            );
-            const data = await response.json();
-            if (response.ok && data) {
-              setMenu(data); // Set the fetched menu data if successful
+            const response = await apiClient.get(`/menu/${menuId}`);
+            const data = response.data;
+           
+            if (response.status >= 200 && response.status < 300 && data) {
+              setMenu(data);
             } else {
-              setMenu(null); // Set to null if not found or error in response
+              setMenu(null); 
             }
           } catch (error) {
             console.error("Error fetching menu:", error);
-            setMenu(null); // Set to null in case of an error
+            setMenu(null);
           } finally {
-            setLoading(false); // Set loading to false after fetch completes
+            setLoading(false); 
           }
         };
-    
+      
         fetchMenu();
       }, [menuId]);
+      
     
       const handleDelete = async () => {
         if (window.confirm("Are you sure you want to delete this menu item?")) {
           try {
-            const token = localStorage.getItem("token"); // Get the token for authorization
-            const response = await fetch(
-              `http://localhost:4000/api/v1/menu/${menuId}`,
-              {
-                method: "DELETE",
-                headers: {
-                  Authorization: `Bearer ${token}`, // Send the token in the headers for authorization
-                },
-              }
-            );
+            const response = await apiClient.delete(`/menu/${menuId}`);
     
-            if (response.ok) {
+            if (response.status >= 200 && response.status <= 299) {
               alert("Menu item deleted successfully!");
-              navigate("/home"); // Redirect to home after deletion
+              navigate("/home"); 
             } else {
               alert("Failed to delete the menu item.");
             }

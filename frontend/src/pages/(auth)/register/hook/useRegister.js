@@ -26,7 +26,7 @@ export const useRegister = () => {
 
     // Check for password match
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
+      setErrorMessage("Passwords do not match!");
       return;
     }
 

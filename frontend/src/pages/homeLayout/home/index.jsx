@@ -43,7 +43,7 @@ const Home = () => {
       {/* Welcome message with waving emoji */}
       {user && (
         <div className="absolute top-1 right-4 flex items-center space-x-2">
-          <p className="text-xl text-blue-600">
+          <p className="text-xl text-blue-600 text-bold">
             Welcome, 
             <span className="font-semibold">{user.username} <span className="animate-waving-text">👋</span></span>
           </p>
@@ -116,10 +116,10 @@ const Home = () => {
             menus.map((menu, index) => (
               <div
                 key={menu._id}
-                className="p-4 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-110 opacity-0 animate-fadeIn"
+                className="menu-container p-4 bg-white rounded-lg shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:scale-110 opacity-0 animate-fadeIn"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="flex flex-col items-center text-center">
+                <div className=" flex flex-col items-center text-center ">
                   <Link to={`/home/menu/${menu._id}`}>
                     <img
                       src={menu.image || "https://via.placeholder.com/150"}

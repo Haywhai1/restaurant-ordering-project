@@ -31,6 +31,7 @@ export const useLogin = () => {
       console.error("Error:", error);
 
       if (error.response) {
+        console.log(error.response.data.error, "error");
         setErrorMessage(error.response.data.error);
       } else {
         setErrorMessage("Network error, please try again later.");

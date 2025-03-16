@@ -1,20 +1,22 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useGetCurrentUser } from "../../shared/hooks/useGetCurrentUser";
-import { useState } from "react";
-import { FaBars, FaHome, FaSignOutAlt, FaUser, FaClipboardList, FaPlusCircle } from "react-icons/fa"; // Importing the new icon for post-menu
+import { useState, useEffect } from "react";
+import { FaBars, FaHome, FaSignOutAlt, FaUser, FaClipboardList, FaPlusCircle } from "react-icons/fa";
 
 const HomeLayout = () => {
   const { isLoading, user, logout } = useGetCurrentUser();
   const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false); // Sidebar toggle state
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-  const handleLoginRedirect = () => {
-    navigate("/login");
-  };
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen); // Toggle sidebar open/close
-  };
+  const handleLoginRedirect = () => navigate("/login");
+  const toggleSidebar = () => setSidebarOpen((prev) => !prev);
 
   if (isLoading) {
     return (
@@ -23,14 +25,12 @@ const HomeLayout = () => {
       </div>
     );
   }
+
   if (!user) {
     return (
       <div className="h-screen flex items-center justify-center text-gray-600">
         Please log in to access the dashboard.
-        <button
-          onClick={handleLoginRedirect}
-          className="text-blue-500 hover:underline"
-        >
+        <button onClick={handleLoginRedirect} className="text-blue-500 hover:underline">
           Login here
         </button>
       </div>
@@ -39,105 +39,108 @@ const HomeLayout = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar (Left Navbar) */}
+      {/* Sidebar for Desktop | Top Navbar for Mobile */}
       <div
-        className={`${
-          sidebarOpen ? "w-52" : "w-0" // Sidebar width 0 when closed
-        } bg-white text-black flex flex-col p-6 fixed left-0 top-0 h-full z-10 transition-all duration-300 overflow-hidden ${
-          sidebarOpen ? "block" : "hidden" // Hide the sidebar when collapsed
+        className={`bg-white text-black transition-all duration-300 ${
+          isMobile
+            ? "fixed top-0 left-0 right-0 shadow-md flex justify-between items-center py-3 px-6 z-20"
+            : `fixed left-0 top-0 h-full flex flex-col p-6 transition-all duration-300 ${
+                sidebarOpen ? "w-52" : "hidden"
+              }`
         }`}
       >
-        {/* Sidebar content */}
-        <h2 className="text-2xl font-bold mb-8 text-center text-blue-700">RolaKitchen</h2>
-
-        {/* Home Button with Icon */}
-        <NavLink
-          to="/home"
-          end
-          className={({ isActive }) =>
-            isActive
-              ? "mb-4 flex items-center px-6 py-2 bg-gray-200 text-blue-400 rounded-lg transition duration-300"
-              : "mb-4 flex items-center px-6 py-2 text-blue-400 rounded-lg hover:bg-gray-100 transition duration-300"
-          }
-        >
-          <FaHome className="mr-3 text-blue-300" size={20} />
-          Home
-        </NavLink>
-
-        {/* Profile Button with Icon */}
-        <NavLink
-          to="/home/profile"
-          className={({ isActive }) =>
-            isActive
-              ? "mb-4 flex items-center px-6 py-2 bg-gray-200 text-blue-400 rounded-lg transition duration-300"
-              : "mb-4 flex items-center px-6 py-2 text-blue-400 rounded-lg hover:bg-gray-100 transition duration-300"
-          }
-        >
-          <FaUser className="mr-3 text-blue-300" size={20} />
-          My Profile
-        </NavLink>
-
-        {/* Create Menu Button (Post-Menu) - Visible only for Admin */}
-        {user?.role === "admin" && (
-          <NavLink
-            to="/home/create-menu"
-            className={({ isActive }) =>
-              isActive
-                ? "mb-4 flex items-center px-6 py-2 bg-gray-200 text-blue-400 rounded-lg transition duration-300"
-                : "mb-4 flex items-center px-6 py-2 text-blue-400  rounded-lg hover:bg-gray-100 transition duration-300"
-            }
-          >
-            <FaPlusCircle className="mr-3 text-blue-300" size={20} />
-            Post-Menu
-          </NavLink>
+        {!isMobile && (
+          <h2 className="text-2xl font-bold text-blue-700 mb-8 text-center">RolaKitchen</h2>
         )}
 
-        {/* Orders Button with Icon */}
-        {user?.role === "user" && (
-          <NavLink
-            to="/home/orders"
-            className={({ isActive }) =>
-              isActive
-                ? "mb-4 flex items-center px-6 py-2 bg-gray-200 text-blue-400 rounded-lg transition duration-300"
-                : "mb-4 flex items-center px-6 py-2 text-blue-400  rounded-lg hover:bg-gray-100 transition duration-300"
-            }
-          >
-            <FaClipboardList className="mr-3 text-blue-300" size={20} />
-            Orders
-          </NavLink>
-        )}
+<div className={`flex gap-4 ${isMobile ? "gap-6" : "flex-col"}`}>
+  <NavLink
+    to="/home"
+    className={({ isActive }) =>
+      `flex items-center text-blue-400 px-3 py-2 rounded-md ${
+        isActive && !isMobile ? "bg-gray-100 text-blue-800 font-bold" : ""
+      }`
+    }
+    end
+  >
+    <FaHome className="mr-3" size={isMobile ? 26 : 20} />
+    {isMobile ? "" : "Home"}
+  </NavLink>
 
-        {/* Spacer to push logout to the bottom */}
-        <div className="flex-grow"></div> {/* This pushes the logout button to the bottom */}
+  <NavLink
+    to="/home/profile"
+    className={({ isActive }) =>
+      `flex items-center text-blue-400 px-3 py-2 rounded-md ${
+        isActive && !isMobile ? "bg-gray-100 text-blue-800 font-bold" : ""
+      }`
+    }
+  >
+    <FaUser className="mr-3" size={isMobile ? 26 : 20} />
+    {isMobile ? "" : "My Profile"}
+  </NavLink>
 
-        {/* Logout Button with Icon */}
+  {user?.role === "admin" && (
+    <NavLink
+      to="/home/create-menu"
+      className={({ isActive }) =>
+        `flex items-center text-blue-400 px-3 py-2 rounded-md ${
+          isActive && !isMobile ? "bg-gray-100 text-blue-800 font-bold" : ""
+        }`
+      }
+    >
+      <FaPlusCircle className="mr-3" size={isMobile ? 26 : 20} />
+      {isMobile ? "" : "Post-Menu"}
+    </NavLink>
+  )}
+
+  {user?.role === "user" && (
+    <NavLink
+      to="/home/orders"
+      className={({ isActive }) =>
+        `flex items-center text-blue-400 px-3 py-2 rounded-md ${
+          isActive && !isMobile ? "bg-gray-100 text-blue-800 font-bold" : ""
+        }`
+      }
+    >
+      <FaClipboardList className="mr-3" size={isMobile ? 26 : 20} />
+      {isMobile ? "" : "Orders"}
+    </NavLink>
+  )}
+</div>
+
+
+        {/* Logout Button (Flex-Grow only for Desktop) */}
+        {!isMobile && <div className="flex-grow"></div>}
+
         <button
           onClick={logout}
-          className="mb-4 flex items-center px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
-        >
-          <FaSignOutAlt className="mr-3" size={20} />
-          Logout
+          className={`flex items-center ${
+          isMobile ? "px-2 py-1 text-sm" : "px-6 py-2"
+          } bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300`}
+>
+          <FaSignOutAlt className="mr-2" size={isMobile ? 16 : 20} />
+          {isMobile ? "Logout" : "Logout"}
         </button>
+
       </div>
 
-      {/* Content Area (Right Side) */}
+      {/* Main Content Area */}
       <div
-        className={`flex-1 overflow-y-auto relative transition-all duration-300 ${
-          sidebarOpen ? "ml-52" : "ml-0" // Shift content when sidebar opens
+        className={`flex-1 overflow-y-auto transition-all duration-300 relative ${
+          isMobile ? "mt-16" : sidebarOpen ? "ml-52" : "ml-0"
         }`}
       >
-        {/* Toggle Button Positioned Inside Main Content */}
-        <button
-          onClick={toggleSidebar}
-          className="absolute top-5 left-5 bg-blue-300 text-white p-3 rounded-full z-20"
-        >
-          <FaBars size={20} />
-        </button>
+        {/* Toggle Button (Always in Main Content) */}
+        {!isMobile && (
+          <button
+            onClick={toggleSidebar}
+            className="absolute top-5 left-5 bg-blue-300 text-white p-3 rounded-full transition-all"
+          >
+            <FaBars size={20} />
+          </button>
+        )}
 
-        {/* Main Content */}
-        <div className="bg-gray-100 shadow-lg border-2 border-t-0 min-h-screen content-center ">
-          <Outlet />
-        </div>
+        <Outlet />
       </div>
     </div>
   );

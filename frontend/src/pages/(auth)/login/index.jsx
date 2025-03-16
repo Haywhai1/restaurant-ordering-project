@@ -3,7 +3,7 @@ import { useLogin } from "./hook/useLogin";
 
 const Login = () => {
 
-  const { formData, erorrMessage, handleChange, handleSubmit } = useLogin();
+  const { formData, errorMessage, handleChange, handleSubmit } = useLogin();
   const navigate = useNavigate(); 
   const handleRegisterRedirect = () => {
     navigate("/"); 
@@ -45,7 +45,7 @@ const Login = () => {
           <div className="mb-6">
             <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Login</button>
           </div>
-          <p className="text-red-500">{erorrMessage}</p>
+          <p className="text-red-500">{errorMessage}</p>
         </form>
 
         <div className="text-center">

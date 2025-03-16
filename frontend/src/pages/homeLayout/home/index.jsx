@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import useHome from "./hook/usehome";
+import useHome from "./hook/useHome";
 
 
 const Home = () => {

@@ -46,7 +46,7 @@ export const useRegister = () => {
         localStorage.setItem("token", token);
         apiClient.defaults.headers["Authorization"] = `Bearer ${token}`;
         alert("Registration successful!");
-        navigate("/home");
+        navigate("/login");
       } else {
         alert("Registration successful, but no token returned.");
       }

@@ -3,7 +3,7 @@ import { useLogin } from "./hook/useLogin";
 
 const Login = () => {
 
-  const { formData, errorMessage, handleChange, handleSubmit } = useLogin();
+  const { loading,formData, errorMessage, handleChange, handleSubmit } = useLogin();
   const navigate = useNavigate(); 
   const handleRegisterRedirect = () => {
     navigate("/"); 
@@ -47,7 +47,13 @@ const Login = () => {
           </div>
 
           <div className="mb-6">
-            <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Login</button>
+          <button 
+              type="submit" 
+              className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none" 
+              disabled={loading}  // Disable button while loading
+            >
+              {loading ? "Logging in..." : "Login"}  {/* Conditionally change button text */}
+            </button>
           </div>
           <p className="text-red-500">{errorMessage}</p>
         </form>

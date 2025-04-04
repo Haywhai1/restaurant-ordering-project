@@ -4,6 +4,7 @@ import { apiClient } from "../../../../shared/hooks/client";
 
 export const useLogin = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); 
   const [formData, setFormData] = useState({
     email: "",
@@ -19,6 +20,7 @@ export const useLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await apiClient.post("/users/login", formData); 
@@ -36,8 +38,10 @@ export const useLogin = () => {
       } else {
         setErrorMessage("Network error, please try again later.");
       }
+    } finally{
+      setLoading(false);	
     }
   };
 
-  return { formData, errorMessage, handleChange, handleSubmit };
+  return { loading,formData, errorMessage, handleChange, handleSubmit };
 };

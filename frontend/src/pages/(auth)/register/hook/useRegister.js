@@ -4,6 +4,7 @@ import { apiClient } from "../../../../shared/hooks/client";
 
 export const useRegister = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(""); // Corrected errorMessage
   const [formData, setFormData] = useState({
     username: "",
@@ -23,6 +24,7 @@ export const useRegister = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     // Check for password match
     if (formData.password !== formData.confirmPassword) {
@@ -58,8 +60,10 @@ export const useRegister = () => {
       } else {
         setErrorMessage("Network error, please try again later.");
       }
+    } finally{
+      setLoading(false);
     }
   };
 
-  return { formData, errorMessage, handleChange, handleSubmit };
+  return { loading, formData, errorMessage, handleChange, handleSubmit };
 };

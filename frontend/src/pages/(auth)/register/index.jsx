@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRegister } from "./hook/useRegister";
 
 const Register = () => {
-  const { formData, errorMessage, handleChange, handleSubmit } = useRegister();
+  const { loading, formData, errorMessage, handleChange, handleSubmit } = useRegister();
   const navigate = useNavigate();
 
   const handleLoginRedirect = () => {
@@ -74,7 +74,13 @@ const Register = () => {
           </div>
 
           <div className="mb-6">
-            <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none">Register</button>
+          <button 
+              type="submit" 
+              className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none" 
+              disabled={loading}  
+            >
+              {loading ? "Registering..." : "Register"}
+            </button>
           </div>
           <p className="text-red-500">{errorMessage}</p>
         </form>
